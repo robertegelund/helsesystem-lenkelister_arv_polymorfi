@@ -11,6 +11,13 @@ class Spesialist extends Lege implements Godkjenningsfritak {
     }
 
     @Override
+    public Resept skrivBlaaResept(Legemiddel legemiddel, Pasient pasient, int reit) {
+        BlaaResept nyResept = new BlaaResept(legemiddel, this, pasient, reit);
+        utskrevneResepter.leggTil(nyResept); pasient.leggTilResept(nyResept);
+        return nyResept;
+    }
+
+    @Override
     public String toString() {
         return super.toString() + " (Spesialist) - Kontrollkode: " + kontrollkode;
     }
