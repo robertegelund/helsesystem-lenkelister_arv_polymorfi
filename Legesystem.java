@@ -20,12 +20,15 @@ public abstract class Legesystem {
 
     private static void mottaBrukerinput() {
         Scanner sc = new Scanner(System.in);
-        
+        System.out.println("\n--------------------------------------------------------------------");
+        System.out.println("Velkommen til ditt personlige legesystem. Vennligst velg fra menyen.");
+        System.out.println("--------------------------------------------------------------------");
+
         String brukerInput = "";
-        while(!brukerInput.equals("4")) {
+        while(!brukerInput.equals("5")) {
             brukerInput = "";
             visBrukermeny();
-            System.out.print("\n# Tast ditt menyvalg (0-4): " + brukerInput);
+            System.out.print("\n# Tast ditt menyvalg (0-6): " + brukerInput);
             brukerInput = sc.nextLine();
             handtereBrukerinput(brukerInput);
         }
@@ -38,8 +41,9 @@ public abstract class Legesystem {
             case "0": {skrivUtAllInformasjon(); break;}
             case "1": {skrivUtAllInformasjon(); break;}
             case "2": {skrivUtAllInformasjon(); break;}
-            case "3": {skrivUtAllInformasjon(); break;}
-            default: System.exit(0);
+            case "3": {skrivUtAntVaneNark(); break;}
+            case "4": {skrivUtAllInformasjon(); break;}
+            case "5": {skrivUtAllInformasjon(); break;}
         }
     }
 
@@ -62,15 +66,31 @@ public abstract class Legesystem {
         for(Resept resept : resepter) {System.out.println(resept+"\n");}
     }
 
+    public static void skrivUtAntVaneNark() {
+        int antVanedannende = 0;
+        int antNarkotiske = 0;
+
+        for(Resept resept : resepter) {
+            if(resept.hentLegemiddel() instanceof Vanedannende) {
+                antVanedannende++;
+            } else if(resept.hentLegemiddel() instanceof Narkotisk) {
+                antNarkotiske++;
+            }
+        }
+
+        System.out.println("\n--------------------------------------------------------------------");
+        System.out.println("Totalt antall utskrevne vanedannende resepter: " + antVanedannende);
+        System.out.println("Totalt antall utskrevne narkotiske resepter: " + antNarkotiske);
+        System.out.println("--------------------------------------------------------------------");
+    }
+
     private static void visBrukermeny() {
-        System.out.println("--------------------------------------------------------------------");
-        System.out.println("Velkommen til ditt personlige legesystem. Vennligst velg fra menyen.");
-        System.out.println("--------------------------------------------------------------------");
-        System.out.println("0: Skriv ut oversikt over pasienter, leger, legemidler og resepter");
+        System.out.println("\n0: Skriv ut oversikt over pasienter, leger, legemidler og resepter");
         System.out.println("1: Opprett og legg til nye elementer i systemet");
         System.out.println("2: Bruk en resept fra listen til en pasient");
-        System.out.println("3: Skriv ut forskjellige former for statistikk");
-        System.out.println("4: Avslutt programmet");
+        System.out.println("3: Se totalt antall uskrevne resepter paa vanedannende og narkotiske legemidler");
+        System.out.println("4: Se statistikk om mulig misbruk av narkotika");
+        System.out.println("5: Avslutt programmet");
     }
 
     private static void lesFraFil(String filnavn) {

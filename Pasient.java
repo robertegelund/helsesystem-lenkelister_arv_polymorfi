@@ -1,5 +1,5 @@
 public class Pasient {
-    private int antPasienter = 0;
+    private static int antPasienter = 0;
     private String navn, fodselsnr;
     private int pasientID;
     private IndeksertListe<Resept> resepter = new IndeksertListe<>();
