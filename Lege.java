@@ -18,11 +18,11 @@ public class Lege implements Comparable<Lege> {
 
     @Override
     public String toString() {
-        return "Dr. " + navn;
+        return navn;
     }
 
     @Override
     public int compareTo(Lege annen) {
-        return toString().compareTo(annen.toString());
+        return navn.compareTo(annen.navn);
     }
 }

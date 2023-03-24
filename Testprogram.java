@@ -9,10 +9,10 @@ class Testprogram {
         Narkotisk predizol = new Narkotisk("Predizol", 450, 75, 8);
         Vanedannende paralginForte = new Vanedannende("Paralgin Forte", 65, 400, 5);
         
-        BlaaResept blaaRes = new BlaaResept(paracet, lege, 0, 5);
-        HvitResept hvitRes = new HvitResept(predizol, spesialist, 3, 2);
-        MilResept milRes = new MilResept(paralginForte, spesialist, 1);
-        PResept pRes = new PResept(paralginForte, lege, 4, 1);
+        // BlaaResept blaaRes = new BlaaResept(paracet, lege, 0, 5);
+        // HvitResept hvitRes = new HvitResept(predizol, spesialist, 3, 2);
+        // MilResept milRes = new MilResept(paralginForte, spesialist, 1);
+        // PResept pRes = new PResept(paralginForte, lege, 4, 1);
 
         Lege[] leger = {lege, spesialist};
         Legemiddel[] legemidler = {paracet, predizol, paralginForte};

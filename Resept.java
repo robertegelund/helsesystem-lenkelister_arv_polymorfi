@@ -26,7 +26,6 @@ abstract class Resept {
     public int hentId() {return reseptID;}
     public Legemiddel hentLegemiddel() {return legemiddel;}
     public Lege hentLege() {return utskrivendeLege;}
-    public int hentPasientId() {return pasient.pasientID;}
     public int hentReit() {return reit;}
 
     @Override
@@ -34,9 +33,9 @@ abstract class Resept {
         String info = "";
         info += "Resept-ID: " + reseptID + "\n";
         info += "Reseptfarge: " + farge() + "\n";
-        info += "Legemiddel: " + legemiddel.navn + "\n";
-        info += "Utskrivende lege: " + utskrivendeLege.toString() + "\n";
-        info += "Pasient-ID: " + pasient.pasientID + "\n";
+        info += "Legemiddel: " + legemiddel.hentNavn() + "\n";
+        info += "Utskrivende lege: " + utskrivendeLege.hentNavn() + "\n";
+        info += "Pasient-ID: " + pasient.hentPasientID() + "\n";
         info += "Pris: " + prisAaBetale() + "\n";
         info += "Reiterasjoner: " + reit;
         return info;
