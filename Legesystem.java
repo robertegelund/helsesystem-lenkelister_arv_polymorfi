@@ -15,16 +15,62 @@ public abstract class Legesystem {
             lesFraFil("legedata.txt");
         }
 
-        visBrukermeny();
+        mottaBrukerinput();
+    }
+
+    private static void mottaBrukerinput() {
+        Scanner sc = new Scanner(System.in);
+        
+        String brukerInput = "";
+        while(!brukerInput.equals("4")) {
+            brukerInput = "";
+            visBrukermeny();
+            System.out.print("\n# Tast ditt menyvalg (0-4): " + brukerInput);
+            brukerInput = sc.nextLine();
+            handtereBrukerinput(brukerInput);
+        }
+        System.out.println("\nProgrammet avsluttes. Velkommen tilbake!\n");
+        sc.close();
+    }
+
+    public static void handtereBrukerinput(String brukerInput) {
+        switch(brukerInput) {
+            case "0": {skrivUtAllInformasjon(); break;}
+            case "1": {skrivUtAllInformasjon(); break;}
+            case "2": {skrivUtAllInformasjon(); break;}
+            case "3": {skrivUtAllInformasjon(); break;}
+            default: System.exit(0);
+        }
+    }
+
+    public static void skrivUtAllInformasjon() {
+        System.out.println("\n--------------------------------------------------------------------");
+        System.out.println("INFORMASJON OM ALLE PASIENTER");
+        System.out.println("--------------------------------------------------------------------");
+        for(Pasient pasient : pasienter) {System.out.println(pasient);}
+        System.out.println("\n--------------------------------------------------------------------");
+        System.out.println("INFORMASJON OM ALLE LEGEMIDLER");
+        System.out.println("--------------------------------------------------------------------");
+        for(Legemiddel legemiddel : legemidler) {System.out.println(legemiddel+"\n");}
+        System.out.println("\n--------------------------------------------------------------------");
+        System.out.println("INFORMASJON OM ALLE LEGER");
+        System.out.println("--------------------------------------------------------------------");
+        for(Lege lege : leger) {System.out.println(lege);}
+        System.out.println("\n--------------------------------------------------------------------");
+        System.out.println("INFORMASJON OM ALLE RESEPTER");
+        System.out.println("--------------------------------------------------------------------");
+        for(Resept resept : resepter) {System.out.println(resept+"\n");}
     }
 
     private static void visBrukermeny() {
-        Scanner sc = null;
-        sc = new Scanner(System.in);
-        
-        
-
-        sc.close();
+        System.out.println("--------------------------------------------------------------------");
+        System.out.println("Velkommen til ditt personlige legesystem. Vennligst velg fra menyen.");
+        System.out.println("--------------------------------------------------------------------");
+        System.out.println("0: Skriv ut oversikt over pasienter, leger, legemidler og resepter");
+        System.out.println("1: Opprett og legg til nye elementer i systemet");
+        System.out.println("2: Bruk en resept fra listen til en pasient");
+        System.out.println("3: Skriv ut forskjellige former for statistikk");
+        System.out.println("4: Avslutt programmet");
     }
 
     private static void lesFraFil(String filnavn) {

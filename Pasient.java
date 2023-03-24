@@ -18,4 +18,9 @@ public class Pasient {
         resepter.leggTil(resept);
     }
 
+    @Override
+    public String toString() {
+        return navn + " (fnr.: )" + fodselsnr; 
+    }
+
 }
