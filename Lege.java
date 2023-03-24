@@ -10,6 +10,7 @@ public class Lege implements Comparable<Lege> {
     public IndeksertListe<Resept> hentUtskrevneResepter() {return utskrevneResepter;}
 
     public Resept skrivResept(Legemiddel legemiddel, Pasient pasient, int reit) throws UlovligUtskrift {
+        if(legemiddel instanceof Narkotisk) throw new UlovligUtskrift(this, legemiddel);
         HvitResept nyResept = new HvitResept(legemiddel, this, pasient, reit);
         utskrevneResepter.leggTil(nyResept);
         return nyResept;
