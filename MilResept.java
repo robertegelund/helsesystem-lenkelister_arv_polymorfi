@@ -1,7 +1,7 @@
 class MilResept extends HvitResept {
     
-    MilResept(Legemiddel legemiddel, Lege utskrivendeLege, int pasientId) {
-        super(legemiddel, utskrivendeLege, pasientId, 3);
+    MilResept(Legemiddel legemiddel, Lege utskrivendeLege, Pasient pasient) {
+        super(legemiddel, utskrivendeLege, pasient, 3);
     }
     
     @Override

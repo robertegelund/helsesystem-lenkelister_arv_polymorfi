@@ -15,6 +15,7 @@ abstract class Legemiddel {
 
     public int hentPris() {return pris;}
     public void settNyPris(int nyPris) {pris = nyPris;}
+    public String hentNavn() {return navn;}
 
     @Override
     public String toString() {

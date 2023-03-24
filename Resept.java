@@ -1,16 +1,16 @@
 abstract class Resept {
     private static int antResepter = 0;
-    private int ID;
+    private int reseptID, reit;
     private Legemiddel legemiddel;
     private Lege utskrivendeLege;
-    private int pasientId, reit;
+    private Pasient pasient;
 
-    Resept(Legemiddel legemiddel, Lege utskrivendeLege, int pasientId, int reit) {
+    Resept(Legemiddel legemiddel, Lege utskrivendeLege, Pasient pasient, int reit) {
         this.legemiddel = legemiddel;
         this.utskrivendeLege = utskrivendeLege;
-        this.pasientId = pasientId;
+        this.pasient = pasient;
         this.reit = reit;
-        ID = antResepter;
+        reseptID = antResepter;
         antResepter++;
     }
 
@@ -23,20 +23,20 @@ abstract class Resept {
     abstract public String farge();
     abstract public int prisAaBetale();
 
-    public int hentId() {return ID;}
+    public int hentId() {return reseptID;}
     public Legemiddel hentLegemiddel() {return legemiddel;}
     public Lege hentLege() {return utskrivendeLege;}
-    public int hentPasientId() {return pasientId;}
+    public int hentPasientId() {return pasient.pasientID;}
     public int hentReit() {return reit;}
 
     @Override
     public String toString() {
         String info = "";
-        info += "Resept-ID: " + ID + "\n";
+        info += "Resept-ID: " + reseptID + "\n";
         info += "Reseptfarge: " + farge() + "\n";
         info += "Legemiddel: " + legemiddel.navn + "\n";
-        info += "Utskrivende lege: " + utskrivendeLege.hentNavn() + "\n";
-        info += "Pasient-ID: " + pasientId + "\n";
+        info += "Utskrivende lege: " + utskrivendeLege.toString() + "\n";
+        info += "Pasient-ID: " + pasient.pasientID + "\n";
         info += "Pris: " + prisAaBetale() + "\n";
         info += "Reiterasjoner: " + reit;
         return info;
