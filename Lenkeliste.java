@@ -67,17 +67,24 @@ abstract class Lenkeliste<E> implements Liste<E> {
         return innhold;
     }
 
-    protected class LenkelisteIterator implements Iterator<E> {
+    @Override
+    public Iterator<E> iterator() {
+        return new LenkelisteIterator();
+    }
+    
+    private class LenkelisteIterator implements Iterator<E> {
         Node peker = forste;
 
         @Override
         public boolean hasNext() {
-            return peker.neste != null;
+            return peker != null;
         }
 
         @Override
         public E next() {
-            return peker.data;
+            E data = peker.data;
+            peker = peker.neste;
+            return data;
         }
     }
 }
