@@ -1,3 +1,5 @@
+import java.util.Iterator;
+
 abstract class Lenkeliste<E> implements Liste<E> {
     //I denne superklassen legges elementer inn bakerst og elementer fjernes forrerst (FIFO)
 
@@ -63,5 +65,19 @@ abstract class Lenkeliste<E> implements Liste<E> {
         }
         innhold += "\n";
         return innhold;
+    }
+
+    protected class LenkelisteIterator implements Iterator<E> {
+        Node peker = forste;
+
+        @Override
+        public boolean hasNext() {
+            return peker.neste != null;
+        }
+
+        @Override
+        public E next() {
+            return peker.data;
+        }
     }
 }
