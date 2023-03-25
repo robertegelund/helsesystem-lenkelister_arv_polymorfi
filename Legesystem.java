@@ -15,14 +15,15 @@ public abstract class Legesystem {
             lesFraFil("legedata.txt");
         }
 
-        mottaBrukerinput();
+        //mottaBrukerinput();
+        visPasientResepter(1);
     }
 
     private static void mottaBrukerinput() {
         Scanner sc = new Scanner(System.in);
-        System.out.println("\n--------------------------------------------------------------------");
-        System.out.println("Velkommen til ditt personlige legesystem. Vennligst velg fra menyen.");
-        System.out.println("--------------------------------------------------------------------");
+        print("\n--------------------------------------------------------------------");
+        print("Velkommen til ditt personlige legesystem. Vennligst velg fra menyen.");
+        print("--------------------------------------------------------------------");
 
         String brukerInput = "";
         while(handtereBrukerinput(brukerInput)) {
@@ -31,7 +32,7 @@ public abstract class Legesystem {
             System.out.print("\n# Tast ditt menyvalg (0-5): " + brukerInput);
             brukerInput = sc.nextLine();
         }
-        System.out.println("\nProgrammet avsluttes. Velkommen tilbake!\n");
+        print("\nProgrammet avsluttes. Velkommen tilbake!\n");
         sc.close();
     }
 
@@ -48,23 +49,33 @@ public abstract class Legesystem {
     }
 
     public static void skrivUtAllInformasjon() {
-        System.out.println("\n--------------------------------------------------------------------");
-        System.out.println("INFORMASJON OM ALLE PASIENTER");
-        System.out.println("--------------------------------------------------------------------");
+        print("\n--------------------------------------------------------------------");
+        print("INFORMASJON OM ALLE PASIENTER");
+        print("--------------------------------------------------------------------");
         for(Pasient pasient : pasienter) {System.out.println(pasient);}
-        System.out.println("\n--------------------------------------------------------------------");
-        System.out.println("INFORMASJON OM ALLE LEGEMIDLER");
-        System.out.println("--------------------------------------------------------------------");
-        for(Legemiddel legemiddel : legemidler) {System.out.println(legemiddel+"\n");}
-        System.out.println("\n--------------------------------------------------------------------");
-        System.out.println("INFORMASJON OM ALLE LEGER");
-        System.out.println("--------------------------------------------------------------------");
+        print("\n--------------------------------------------------------------------");
+        print("INFORMASJON OM ALLE LEGEMIDLER");
+        print("--------------------------------------------------------------------");
+        for(Legemiddel legemiddel : legemidler) {print(legemiddel+"\n");}
+        print("\n--------------------------------------------------------------------");
+        print("INFORMASJON OM ALLE LEGER");
+        print("--------------------------------------------------------------------");
         for(Lege lege : leger) {System.out.println(lege);}
-        System.out.println("\n--------------------------------------------------------------------");
-        System.out.println("INFORMASJON OM ALLE RESEPTER");
-        System.out.println("--------------------------------------------------------------------");
-        for(Resept resept : resepter) {System.out.println(resept+"\n");}
-        System.out.println("--------------------------------------------------------------------");
+        print("\n--------------------------------------------------------------------");
+        print("INFORMASJON OM ALLE RESEPTER");
+        print("--------------------------------------------------------------------");
+        for(Resept resept : resepter) {print(resept+"\n");}
+        print("--------------------------------------------------------------------");
+    }
+
+    public static void visPasientResepter(int pasientID) {
+        IndeksertListe<Resept> resepter = pasienter.hent(pasientID).hentResepter();
+        int resNr = 0;
+        for(Resept resept : resepter) {
+            print(resNr + ": " + resept.hentLegemiddel().hentNavn() + 
+                                " (" + resept.hentReit() + " reit)");
+            resNr++;
+        }
     }
 
     public static void skrivUtAntVaneNark() {
@@ -79,16 +90,16 @@ public abstract class Legesystem {
             }
         }
 
-        System.out.println("\n--------------------------------------------------------------------");
-        System.out.println("Totalt antall utskrevne vanedannende resepter: " + antVanedannende);
-        System.out.println("Totalt antall utskrevne narkotiske resepter: " + antNarkotiske);
-        System.out.println("--------------------------------------------------------------------");
+        print("\n--------------------------------------------------------------------");
+        print("Totalt antall utskrevne vanedannende resepter: " + antVanedannende);
+        print("Totalt antall utskrevne narkotiske resepter: " + antNarkotiske);
+        print("--------------------------------------------------------------------");
     }
 
     public static void skrivUtMuligMisbruk() {
-        System.out.println("\n--------------------------------------------------------------------");
-        System.out.println("INFORMASJON OM MULIG NARKOTISK MISBRUK");
-        System.out.println("--------------------------------------------------------------------");
+        print("\n--------------------------------------------------------------------");
+        print("INFORMASJON OM MULIG NARKOTISK MISBRUK");
+        print("--------------------------------------------------------------------");
         
         for(Lege lege : leger) {
             int antNarkRes = 0;
@@ -98,7 +109,7 @@ public abstract class Legesystem {
                 }
             }
             if(antNarkRes > 0) {
-                System.out.println(lege + "\n***Antall utskrevne narkotiske resepter: " + antNarkRes+"\n");
+                print(lege + "\n***Antall utskrevne narkotiske resepter: " + antNarkRes+"\n");
             }
         } 
 
@@ -110,19 +121,19 @@ public abstract class Legesystem {
                 }
             }
             if(antNarkRes > 0) {
-                System.out.println(pasient + "\n***Antall mottatte narkotiske resepter: " + antNarkRes);
-                System.out.println("--------------------------------------------------------------------\n");
+                print(pasient + "\n***Antall mottatte narkotiske resepter: " + antNarkRes);
+                print("--------------------------------------------------------------------\n");
             }
         } 
     }
 
     private static void visBrukermeny() {
-        System.out.println("\n0: Skriv ut oversikt over pasienter, leger, legemidler og resepter");
-        System.out.println("1: Opprett og legg til nye elementer i systemet");
-        System.out.println("2: Bruk en resept fra listen til en pasient");
-        System.out.println("3: Se totalt antall uskrevne resepter paa vanedannende og narkotiske legemidler");
-        System.out.println("4: Se statistikk om mulig misbruk av narkotika");
-        System.out.println("5: Avslutt programmet");
+        print("\n0: Skriv ut oversikt over pasienter, leger, legemidler og resepter");
+        print("1: Opprett og legg til nye elementer i systemet");
+        print("2: Bruk en resept fra listen til en pasient");
+        print("3: Se totalt antall uskrevne resepter paa vanedannende og narkotiske legemidler");
+        print("4: Se statistikk om mulig misbruk av narkotika");
+        print("5: Avslutt programmet");
     }
 
     private static void lesFraFil(String filnavn) {
@@ -135,7 +146,7 @@ public abstract class Legesystem {
             sc.close();
             sc = new Scanner(new File(filnavn));
         } catch (FileNotFoundException e) {
-            System.out.println("Filen ble ikke funnet.");
+            print("Filen ble ikke funnet.");
             System.exit(1);
         }
 
@@ -212,8 +223,12 @@ public abstract class Legesystem {
                     resepter.leggTil(lege.skrivBlaaResept(legemiddel, pasient, reit));
                 }
             } catch(UlovligUtskrift e) {
-                System.out.println(e.getMessage() + ". Resept ikke opprettet.");
+                print(e.getMessage() + ". Resept ikke opprettet.");
             }
         }
+    }
+
+    private static void print(String string) {
+        System.out.println(string);
     }
 }
