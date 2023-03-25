@@ -23,7 +23,7 @@ abstract class Resept {
     abstract public String farge();
     abstract public int prisAaBetale();
 
-    public int hentId() {return reseptID;}
+    public int hentID() {return reseptID;}
     public Legemiddel hentLegemiddel() {return legemiddel;}
     public Lege hentLege() {return utskrivendeLege;}
     public int hentReit() {return reit;}

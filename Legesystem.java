@@ -25,7 +25,7 @@ public abstract class Legesystem {
         print("--------------------------------------------------------------------");
 
         String brukerInput = "";
-        while(handtereBrukerinput(brukerInput)) {
+        while(handtereBrukerinput(brukerInput, sc)) {
             visBrukermeny();
             brukerInput = "";
             System.out.print("\n# Tast ditt menyvalg (0-5): " + brukerInput);
@@ -35,11 +35,11 @@ public abstract class Legesystem {
         sc.close();
     }
 
-    public static boolean handtereBrukerinput(String brukerInput) {
+    public static boolean handtereBrukerinput(String brukerInput, Scanner sc) {
         switch(brukerInput) {
             case "0": {visAllInformasjon(); return true;}
             case "1": {return true;}
-            case "2": {visPasienterMedResepter(); return true;}
+            case "2": {brukPasientResepter(sc); return true;}
             case "3": {visAntVaneNark(); return true;}
             case "4": {visMuligMisbruk(); return true;}
             case "5": {return false;}
@@ -67,26 +67,50 @@ public abstract class Legesystem {
         print("--------------------------------------------------------------------");
     }
 
+    public static void brukPasientResepter(Scanner sc) {
+        visPasienterMedResepter();
+        String brukerInput = "";
+        System.out.print("\n# Velg pasient ved aa skrive inn ID: " + brukerInput);
+        brukerInput = sc.nextLine();
+        visPasientResepter(Integer.parseInt(brukerInput));
+        brukerInput = "";
+        System.out.print("\n# Velg resept ved aa skrive inn ID: " + brukerInput);
+        brukerInput = sc.nextLine();
+        brukEnResept(Integer.parseInt(brukerInput));
+    }
+
+    public static void brukEnResept(int reseptID) {
+        Resept resept = resepter.hent(reseptID);
+        resept.bruk();
+        if(resept.hentReit() == 0) {
+            print("Resept paa " + resept.hentLegemiddel().hentNavn() + 
+            " brukt. Ingen gjaenvaerende reiterasjoner.");
+        } else {
+            print("Resept paa " + resept.hentLegemiddel().hentNavn() + 
+            " brukt. Gjenvaerende iterasjoner: " + resept.hentReit() + ".");
+        }
+    }
+
     public static void visPasienterMedResepter() {
         print("\n--------------------------------------------------------------------");
         print("PASIENTER SOM HAR RESEPTER");
         print("--------------------------------------------------------------------");
-        int brukervalg = 0;
         for(Pasient pasient : pasienter) {
             if(pasient.hentResepter().stoerrelse() != 0) {
-                print(brukervalg + ": " + pasient);
-                brukervalg++;
+                print("ID " + pasient.hentPasientID() + ": " + pasient);
             }
         }
     }
 
     public static void visPasientResepter(int pasientID) {
         IndeksertListe<Resept> resepter = pasienter.hent(pasientID).hentResepter();
-        int brukervalg = 0;
+        print("\n--------------------------------------------------------------------");
+        print("VISER RESEPT(ER) FOR " + pasienter.hent(pasientID));
+        print("--------------------------------------------------------------------");
         for(Resept resept : resepter) {
-            print(brukervalg + ": " + resept.hentLegemiddel().hentNavn() + 
-                                " (" + resept.hentReit() + " reit)");
-            brukervalg++;
+            print("ID " + resept.hentID() + ": " + 
+                    resept.hentLegemiddel().hentNavn() + 
+                    " (" + resept.hentReit() + " reit)");
         }
     }
 
