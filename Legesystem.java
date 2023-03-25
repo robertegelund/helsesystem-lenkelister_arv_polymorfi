@@ -15,8 +15,7 @@ public abstract class Legesystem {
             lesFraFil("legedata.txt");
         }
 
-        //mottaBrukerinput();
-        visPasientResepter(1);
+        mottaBrukerinput();
     }
 
     private static void mottaBrukerinput() {
@@ -38,21 +37,21 @@ public abstract class Legesystem {
 
     public static boolean handtereBrukerinput(String brukerInput) {
         switch(brukerInput) {
-            case "0": {skrivUtAllInformasjon(); return true;}
+            case "0": {visAllInformasjon(); return true;}
             case "1": {return true;}
-            case "2": {return true;}
-            case "3": {skrivUtAntVaneNark(); return true;}
-            case "4": {skrivUtMuligMisbruk(); return true;}
+            case "2": {visPasienterMedResepter(); return true;}
+            case "3": {visAntVaneNark(); return true;}
+            case "4": {visMuligMisbruk(); return true;}
             case "5": {return false;}
             default: {return true;}
         }
     }
 
-    public static void skrivUtAllInformasjon() {
+    public static void visAllInformasjon() {
         print("\n--------------------------------------------------------------------");
         print("INFORMASJON OM ALLE PASIENTER");
         print("--------------------------------------------------------------------");
-        for(Pasient pasient : pasienter) {System.out.println(pasient);}
+        for(Pasient pasient : pasienter) {print(pasient+"");}
         print("\n--------------------------------------------------------------------");
         print("INFORMASJON OM ALLE LEGEMIDLER");
         print("--------------------------------------------------------------------");
@@ -60,7 +59,7 @@ public abstract class Legesystem {
         print("\n--------------------------------------------------------------------");
         print("INFORMASJON OM ALLE LEGER");
         print("--------------------------------------------------------------------");
-        for(Lege lege : leger) {System.out.println(lege);}
+        for(Lege lege : leger) {print(lege+"");}
         print("\n--------------------------------------------------------------------");
         print("INFORMASJON OM ALLE RESEPTER");
         print("--------------------------------------------------------------------");
@@ -68,17 +67,30 @@ public abstract class Legesystem {
         print("--------------------------------------------------------------------");
     }
 
-    public static void visPasientResepter(int pasientID) {
-        IndeksertListe<Resept> resepter = pasienter.hent(pasientID).hentResepter();
-        int resNr = 0;
-        for(Resept resept : resepter) {
-            print(resNr + ": " + resept.hentLegemiddel().hentNavn() + 
-                                " (" + resept.hentReit() + " reit)");
-            resNr++;
+    public static void visPasienterMedResepter() {
+        print("\n--------------------------------------------------------------------");
+        print("PASIENTER SOM HAR RESEPTER");
+        print("--------------------------------------------------------------------");
+        int brukervalg = 0;
+        for(Pasient pasient : pasienter) {
+            if(pasient.hentResepter().stoerrelse() != 0) {
+                print(brukervalg + ": " + pasient);
+                brukervalg++;
+            }
         }
     }
 
-    public static void skrivUtAntVaneNark() {
+    public static void visPasientResepter(int pasientID) {
+        IndeksertListe<Resept> resepter = pasienter.hent(pasientID).hentResepter();
+        int brukervalg = 0;
+        for(Resept resept : resepter) {
+            print(brukervalg + ": " + resept.hentLegemiddel().hentNavn() + 
+                                " (" + resept.hentReit() + " reit)");
+            brukervalg++;
+        }
+    }
+
+    public static void visAntVaneNark() {
         int antVanedannende = 0;
         int antNarkotiske = 0;
 
@@ -96,7 +108,7 @@ public abstract class Legesystem {
         print("--------------------------------------------------------------------");
     }
 
-    public static void skrivUtMuligMisbruk() {
+    public static void visMuligMisbruk() {
         print("\n--------------------------------------------------------------------");
         print("INFORMASJON OM MULIG NARKOTISK MISBRUK");
         print("--------------------------------------------------------------------");

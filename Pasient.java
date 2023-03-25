@@ -24,7 +24,7 @@ public class Pasient {
 
     @Override
     public String toString() {
-        return pasientID + ": " + navn + " (fnr.: " + fodselsnr + ")"; 
+        return navn + " (fnr.: " + fodselsnr + ")"; 
     }
 
 }
