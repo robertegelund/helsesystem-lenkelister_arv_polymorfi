@@ -18,9 +18,13 @@ public class Pasient {
         resepter.leggTil(resept);
     }
 
+    public IndeksertListe<Resept> hentResepter() {
+        return resepter;
+    }
+
     @Override
     public String toString() {
-        return navn + " (fnr.: )" + fodselsnr; 
+        return pasientID + ": " + navn + " (fnr.: " + fodselsnr + ")"; 
     }
 
 }

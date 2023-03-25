@@ -25,25 +25,25 @@ public abstract class Legesystem {
         System.out.println("--------------------------------------------------------------------");
 
         String brukerInput = "";
-        while(!brukerInput.equals("5")) {
-            brukerInput = "";
+        while(handtereBrukerinput(brukerInput)) {
             visBrukermeny();
-            System.out.print("\n# Tast ditt menyvalg (0-6): " + brukerInput);
+            brukerInput = "";
+            System.out.print("\n# Tast ditt menyvalg (0-5): " + brukerInput);
             brukerInput = sc.nextLine();
-            handtereBrukerinput(brukerInput);
         }
         System.out.println("\nProgrammet avsluttes. Velkommen tilbake!\n");
         sc.close();
     }
 
-    public static void handtereBrukerinput(String brukerInput) {
+    public static boolean handtereBrukerinput(String brukerInput) {
         switch(brukerInput) {
-            case "0": {skrivUtAllInformasjon(); break;}
-            case "1": {skrivUtAllInformasjon(); break;}
-            case "2": {skrivUtAllInformasjon(); break;}
-            case "3": {skrivUtAntVaneNark(); break;}
-            case "4": {skrivUtAllInformasjon(); break;}
-            case "5": {skrivUtAllInformasjon(); break;}
+            case "0": {skrivUtAllInformasjon(); return true;}
+            case "1": {return true;}
+            case "2": {return true;}
+            case "3": {skrivUtAntVaneNark(); return true;}
+            case "4": {skrivUtMuligMisbruk(); return true;}
+            case "5": {return false;}
+            default: {return true;}
         }
     }
 
@@ -64,6 +64,7 @@ public abstract class Legesystem {
         System.out.println("INFORMASJON OM ALLE RESEPTER");
         System.out.println("--------------------------------------------------------------------");
         for(Resept resept : resepter) {System.out.println(resept+"\n");}
+        System.out.println("--------------------------------------------------------------------");
     }
 
     public static void skrivUtAntVaneNark() {
@@ -82,6 +83,37 @@ public abstract class Legesystem {
         System.out.println("Totalt antall utskrevne vanedannende resepter: " + antVanedannende);
         System.out.println("Totalt antall utskrevne narkotiske resepter: " + antNarkotiske);
         System.out.println("--------------------------------------------------------------------");
+    }
+
+    public static void skrivUtMuligMisbruk() {
+        System.out.println("\n--------------------------------------------------------------------");
+        System.out.println("INFORMASJON OM MULIG NARKOTISK MISBRUK");
+        System.out.println("--------------------------------------------------------------------");
+        
+        for(Lege lege : leger) {
+            int antNarkRes = 0;
+            for(Resept resept : lege.hentUtskrevneResepter()) {
+                if(resept.hentLegemiddel() instanceof Narkotisk) {
+                    antNarkRes++;
+                }
+            }
+            if(antNarkRes > 0) {
+                System.out.println(lege + "\n***Antall utskrevne narkotiske resepter: " + antNarkRes+"\n");
+            }
+        } 
+
+        for(Pasient pasient : pasienter) {
+            int antNarkRes = 0;
+            for(Resept resept : pasient.hentResepter()) {
+                if(resept.hentLegemiddel() instanceof Narkotisk) {
+                    antNarkRes++;
+                }
+            }
+            if(antNarkRes > 0) {
+                System.out.println(pasient + "\n***Antall mottatte narkotiske resepter: " + antNarkRes);
+                System.out.println("--------------------------------------------------------------------\n");
+            }
+        } 
     }
 
     private static void visBrukermeny() {
