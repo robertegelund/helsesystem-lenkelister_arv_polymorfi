@@ -7,7 +7,6 @@ public abstract class Legesystem {
     private static Prioritetskoe<Lege> leger = new Prioritetskoe<>();
     private static IndeksertListe<Legemiddel> legemidler = new IndeksertListe<>();
     private static IndeksertListe<Resept> resepter = new IndeksertListe<>();
-    private static boolean erBrukermenySynlig = true;
 
     public static void main(String[] args) {
         if (args.length != 0) {
@@ -51,7 +50,7 @@ public abstract class Legesystem {
         print("--------------------------------------------------------------------");
 
         String brukerInput = "";
-        while (handtereBrukerinput(brukerInput, sc)) {
+        while(handtereBrukerinput(brukerInput, sc)) {
             visBrukermeny();
             brukerInput = "";
             System.out.print("\n# Tast ditt menyvalg (0-5): " + brukerInput);
@@ -218,8 +217,8 @@ public abstract class Legesystem {
         boolean erBrukt = resept.bruk(); 
         if(!erBrukt) {
             print("Resept kan ikke brukes. Ingen gjaenvaerende reiterasjoner.");
-            return;
-        };
+            return; 
+        }
         if (resept.hentReit() == 0) {
             print("Resept paa " + resept.hentLegemiddel().hentNavn() +
                     " brukt. Ingen gjaenvaerende reiterasjoner.");
@@ -321,8 +320,7 @@ public abstract class Legesystem {
         }
     }
 
-    private static void leggTilLegemiddel(String type, String navn, int pris, double virkestoff, int styrke)
-            throws IllegalArgumentException {
+    private static void leggTilLegemiddel(String type, String navn, int pris, double virkestoff, int styrke) {
         if (type.equals("vanlig")) {
             legemidler.leggTil(new Vanlig(navn, pris, virkestoff));
         } else if (type.equals("vanedannende")) {
