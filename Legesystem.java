@@ -303,7 +303,7 @@ public abstract class Legesystem {
                 Legemiddel legemiddel = legemidler.hent(Integer.parseInt(deler[0]));
                 Lege lege = null;
                 for(Lege l : leger) { 
-                    if(l.hentNavn().equals(deler[1])) lege = l;
+                    if(l.hentNavn().equals(deler[1])) {lege = l; break;}
                     else throw new IllegalArgumentException(); 
                 }
                 Pasient pasient = pasienter.hent(Integer.parseInt(deler[2]));
@@ -312,12 +312,11 @@ public abstract class Legesystem {
                 leggTilResept(type, legemiddel, lege, pasient, reit);
             }
         } catch(ArrayIndexOutOfBoundsException e) {
-            print("Du har tastet inn informasjon som ikke finnes. Resept ikke opprettet.");
+            print("Du har tastet inn informasjon som ikke finnes eller ikke nok informasjon. Resept ikke opprettet.");
         } catch(UgyldigListeindeks e) {
-            print("Du har tastet inn informasjon som ikke finnes. Resept ikke opprettet.");
-        }
-        catch(IllegalArgumentException e) {
-            print("Du har tastet inn informasjon som ikke finnes. Resept ikke opprettet.");
+            print("Du har tastet inn informasjon som ikke finnes eller ikke nok informasjon. Resept ikke opprettet.");
+        } catch(IllegalArgumentException e) {
+            print("Du har tastet inn informasjon som ikke finnes eller ikke nok informasjon. Resept ikke opprettet.");
         }
     }
 
@@ -336,7 +335,7 @@ public abstract class Legesystem {
         } catch(UlovligUtskrift e) {
             print(e.getMessage() + ". Resept ikke opprettet.");
         } catch(IllegalArgumentException e) {
-            print("Du har tastet inn informasjon som ikke finnes. Resept ikke opprettet.");
+            print("Du har tastet inn informasjon som ikke finnes eller ikke nok informasjon. Resept ikke opprettet.");
         }
     }
 
