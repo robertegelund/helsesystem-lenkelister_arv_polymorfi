@@ -15,10 +15,10 @@ public abstract class Legesystem {
             lesFraFil("legedata.txt");
         }
 
-        mottaBrukerinput();
+        beOmBrukerinput();
     }
 
-    private static void mottaBrukerinput() {
+    private static void beOmBrukerinput() {
         Scanner sc = new Scanner(System.in);
         print("\n--------------------------------------------------------------------");
         print("Velkommen til ditt personlige legesystem. Vennligst velg fra menyen.");
@@ -37,32 +37,13 @@ public abstract class Legesystem {
 
     public static boolean handtereBrukerinput(String brukerInput, Scanner sc) {
         switch (brukerInput) {
-            case "0": {
-                visAllInformasjon();
-                return true;
-            }
-            case "1": {
-                opprettNyeElementer(sc);
-                return true;
-            }
-            case "2": {
-                brukPasientResepter(sc);
-                return true;
-            }
-            case "3": {
-                visAntVaneNark();
-                return true;
-            }
-            case "4": {
-                visMuligMisbruk();
-                return true;
-            }
-            case "5": {
-                return false;
-            }
-            default: {
-                return true;
-            }
+            case "0": {visAllInformasjon(); return true;}
+            case "1": {opprettNyeElementer(sc); return true;}
+            case "2": {brukPasientResepter(sc); return true;}
+            case "3": {visAntVaneNark(); return true;}
+            case "4": {visMuligMisbruk(); return true;}
+            case "5": {return false;}
+            default: {return true;}
         }
     }
 
@@ -104,29 +85,24 @@ public abstract class Legesystem {
         switch (brukerInput) {
             case "lege": {
                 print("# Tast navn,kontrollkode (0 hvis vanlig lege) - kun atskilt med komma: ");
-                leggTilLeger(sc, 1);
-                break;
+                leggTilLeger(sc); break;
             }
             case "pasient": {
-                print("# Tast pasientnavn, fodselsnummer - kun atskilt med komma: ");
-                leggTilPasienter(sc, 1);
-                break;
+                print("# Tast pasientnavn,fodselsnummer - kun atskilt med komma: ");
+                leggTilPasienter(sc); break;
             }
             case "resept": {
                 visReseptmuligheter();
-                print("Du trenger ikke legge inn antall reiterasjoner for militaer, fordi det alltid er 3.");
+                print("Du trenger ikke taste inn antall reiterasjoner for militaer, fordi det alltid er 3.");
                 print("\n# Tast inn legemiddel-ID,lege,pasient-ID,type,antall reiterasjoner - kun atskilt med komma");
-                leggTilResepter(sc, 1);
-                break;
+                leggTilResepter(sc); break;
             }
             case "legemiddel": {
-                print("# Tast inn navn,type,pris,mengde virkestoff,styrke - kun atskilt med komma: ");
-                leggTilLegemidler(sc, 1);
-                break;
+                print("Du trenger kun taste inn vanedannende styrke for vanedannende og narkotiske legemidler.");
+                print("\n# Tast inn navn,type,pris,mengde virkestoff,styrke - kun atskilt med komma: ");
+                leggTilLegemidler(sc); break;
             }
-            default: {
-                break;
-            }
+            default: {break;}
         }
     }
 
@@ -139,7 +115,8 @@ public abstract class Legesystem {
         print("\nFoelgende leger kan skrive ut resepter: ");
         for (Lege lege : leger) {
             if (lege instanceof Spesialist) {
-                print(lege + ". Kan skrive ut blaa resept paa narkotiske legemidler.");
+                print(lege.hentNavn() + " (kan skrive ut resept paa narkotiske legemidler,"
+                        + " men kun paa blaa resept.)");
             } else {
                 print(lege + "");
             }
@@ -229,7 +206,7 @@ public abstract class Legesystem {
                 }
             }
             if (antNarkRes > 0) {
-                print(lege + "\n***Antall utskrevne narkotiske resepter: " + antNarkRes + "\n");
+                print(lege + "\n*Antall utskrevne narkotiske resepter: " + antNarkRes + "\n");
             }
         }
 
@@ -241,7 +218,7 @@ public abstract class Legesystem {
                 }
             }
             if (antNarkRes > 0) {
-                print(pasient + "\n***Antall mottatte narkotiske resepter: " + antNarkRes);
+                print(pasient + "\n*Antall mottatte narkotiske resepter: " + antNarkRes);
                 print("--------------------------------------------------------------------\n");
             }
         }
@@ -258,41 +235,41 @@ public abstract class Legesystem {
 
     private static void lesFraFil(String filnavn) {
         Scanner sc = null;
-        int antLinjer = 0;
 
         try {
-            sc = new Scanner(new File(filnavn));
-            while (sc.hasNextLine()) {
-                antLinjer++;
-                sc.nextLine();
-            }
-            sc.close();
             sc = new Scanner(new File(filnavn));
         } catch (FileNotFoundException e) {
             print("Filen ble ikke funnet.");
             System.exit(1);
         }
 
-        int linjerPerKlasse = (antLinjer - 4) / 4;
-        while (sc.hasNextLine()) {
-            String linje = sc.nextLine();
-            if (linje.contains("Pasienter")) {
-                leggTilPasienter(sc, linjerPerKlasse);
-            } else if (linje.contains("Legemidler")) {
-                leggTilLegemidler(sc, linjerPerKlasse);
-            } else if (linje.contains("Leger")) {
-                leggTilLeger(sc, linjerPerKlasse);
-            } else if (linje.contains("Resepter")) {
-                leggTilResepter(sc, linjerPerKlasse);
+        String nesteLinje = sc.hasNextLine() ? sc.nextLine() : null;
+        while (nesteLinje != null) {
+            if (nesteLinje.contains("Pasienter")) {
+                nesteLinje = leggTilPasienter(sc);
+            } else if (nesteLinje.contains("Legemidler")) {
+                nesteLinje = leggTilLegemidler(sc);
+            } else if (nesteLinje.contains("Leger")) {
+                nesteLinje = leggTilLeger(sc);
+            } else if (nesteLinje.contains("Resepter")) {
+                nesteLinje = leggTilResepter(sc);
             }
         }
         sc.close();
     }
 
-    private static void leggTilPasienter(Scanner sc, int antPasienter) {
-        for (int i = 0; i < antPasienter; i++) {
-            String[] deler = sc.nextLine().trim().split(",");
-            leggTilPasient(deler[0], deler[1]);
+    private static String leggTilPasienter(Scanner sc) {
+        try {
+            String nesteLinje = sc.hasNextLine() ? sc.nextLine() : null;
+            while (nesteLinje != null && !nesteLinje.contains("#")) {
+                String[] deler = nesteLinje.trim().split(",");
+                leggTilPasient(deler[0], deler[1]);
+                nesteLinje = sc.hasNextLine() ? sc.nextLine() : null;
+            }
+            return nesteLinje;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            print("Du har ikke tastet inn nok informasjon. Pasient ikke opprettet.");
+            return null;
         }
     }
 
@@ -300,31 +277,52 @@ public abstract class Legesystem {
         pasienter.leggTil(new Pasient(navn, fodselsnr));
     }
 
-    private static void leggTilLegemidler(Scanner sc, int antLegemidler) {
-        for (int i = 0; i < antLegemidler; i++) {
-            String[] deler = sc.nextLine().trim().split(",");
-            String navn = deler[0], type = deler[1];
-            int pris = Integer.parseInt(deler[2]);
-            double virkestoff = Double.parseDouble(deler[3]);
-            int styrke = (deler.length == 4) ? Integer.parseInt(deler[3]) : 0;
-            leggTilLegemiddel(type, navn, pris, virkestoff, styrke);
+    private static String leggTilLegemidler(Scanner sc) {
+        try {
+            String nesteLinje = sc.hasNextLine() ? sc.nextLine() : null;
+            while (nesteLinje != null && !nesteLinje.contains("#")) {
+                String[] deler = nesteLinje.trim().split(",");
+                String navn = deler[0], type = deler[1];
+                int pris = Integer.parseInt(deler[2]);
+                double virkestoff = Double.parseDouble(deler[3]);
+                int styrke = (deler.length == 4) ? Integer.parseInt(deler[3]) : 0;
+                leggTilLegemiddel(type, navn, pris, virkestoff, styrke);
+                nesteLinje = sc.hasNextLine() ? sc.nextLine() : null;
+            }
+            return nesteLinje;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            print("Du har ikke tastet inn nok informasjon. Legemiddel ikke opprettet.");
+            return null;
+        } catch (IllegalArgumentException e) {
+            print("Legemiddelet kan kun vaere vanlig, vanedannende eller narkotisk. Ikke opprettet.");
+            return null;
         }
     }
 
-    private static void leggTilLegemiddel(String type, String navn, int pris, double virkestoff, int styrke) {
+    private static void leggTilLegemiddel(String type, String navn, int pris, double virkestoff, int styrke)
+            throws IllegalArgumentException {
         if (type.equals("vanlig")) {
             legemidler.leggTil(new Vanlig(navn, pris, virkestoff));
         } else if (type.equals("vanedannende")) {
             legemidler.leggTil(new Vanedannende(navn, pris, virkestoff, styrke));
         } else if (type.equals("narkotisk")) {
             legemidler.leggTil(new Narkotisk(navn, pris, virkestoff, styrke));
-        }
+        } else
+            throw new IllegalArgumentException();
     }
 
-    private static void leggTilLeger(Scanner sc, int antLeger) {
-        for (int i = 0; i < antLeger; i++) {
-            String[] deler = sc.nextLine().trim().split(",");
-            leggTilLege(deler[0], deler[1]);
+    private static String leggTilLeger(Scanner sc) {
+        try {
+            String nesteLinje = sc.hasNextLine() ? sc.nextLine() : null;
+            while (nesteLinje != null && !nesteLinje.contains("#")) {
+                String[] deler = nesteLinje.trim().split(",");
+                leggTilLege(deler[0], deler[1]);
+                nesteLinje = sc.hasNextLine() ? sc.nextLine() : null;
+            }
+            return nesteLinje;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            print("Du har ikke tastet inn nok informasjon. Lege ikke opprettet.");
+            return null;
         }
     }
 
@@ -336,27 +334,36 @@ public abstract class Legesystem {
         }
     }
 
-    private static void leggTilResepter(Scanner sc, int antResepter) {
+    private static String leggTilResepter(Scanner sc) {
         try {
-            for (int i = 0; i < antResepter; i++) {
-                String[] deler = sc.nextLine().trim().split(",");
+            String nesteLinje = sc.hasNextLine() ? sc.nextLine() : null;
+            while (nesteLinje != null && !nesteLinje.contains("#")) {
+                String[] deler = nesteLinje.trim().split(",");
                 Legemiddel legemiddel = legemidler.hent(Integer.parseInt(deler[0]));
                 Lege lege = null;
-                for (Lege l : leger) {if (l.hentNavn().equals(deler[1])) lege = l;}
-                if(lege == null) throw new IllegalArgumentException();
+                for (Lege l : leger) {
+                    if (l.hentNavn().equals(deler[1])) lege = l;
+                }
+                if (lege == null) throw new IllegalArgumentException();
                 Pasient pasient = pasienter.hent(Integer.parseInt(deler[2]));
                 String type = deler[3];
                 int reit = (deler.length == 5) ? Integer.parseInt(deler[4]) : 3;
                 leggTilResept(type, legemiddel, lege, pasient, reit);
-            } 
-        } catch(UlovligUtskrift e) {
-                print(e.getMessage() + ". Resept ikke opprettet.");
+                nesteLinje = sc.hasNextLine() ? sc.nextLine() : null;
+            }
+            return nesteLinje;
+        } catch (UlovligUtskrift e) {
+            print(e.getMessage() + ". Resept ikke opprettet.");
+            return null;
         } catch (ArrayIndexOutOfBoundsException e) {
             print("Du har tastet inn informasjon som ikke finnes eller ikke nok informasjon. Resept ikke opprettet.");
+            return null;
         } catch (UgyldigListeindeks e) {
             print("Du har tastet inn informasjon som ikke finnes eller ikke nok informasjon. Resept ikke opprettet.");
+            return null;
         } catch (IllegalArgumentException e) {
             print("Du har tastet inn informasjon som ikke finnes eller ikke nok informasjon. Resept ikke opprettet.");
+            return null;
         }
     }
 
@@ -371,7 +378,8 @@ public abstract class Legesystem {
             resepter.leggTil(lege.skrivPResept(legemiddel, pasient, reit));
         } else if (type.equals("blaa")) {
             resepter.leggTil(lege.skrivBlaaResept(legemiddel, pasient, reit));
-        } else throw new IllegalArgumentException();
+        } else
+            throw new IllegalArgumentException();
     }
 
     private static void print(String string) {
