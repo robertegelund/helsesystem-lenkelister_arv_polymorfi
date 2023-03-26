@@ -7,6 +7,7 @@ public abstract class Legesystem {
     private static Prioritetskoe<Lege> leger = new Prioritetskoe<>();
     private static IndeksertListe<Legemiddel> legemidler = new IndeksertListe<>();
     private static IndeksertListe<Resept> resepter = new IndeksertListe<>();
+    private static boolean erBrukermenySynlig = true;
 
     public static void main(String[] args) {
         if (args.length != 0) {
@@ -60,11 +61,20 @@ public abstract class Legesystem {
         sc.close();
     }
 
+    private static void visBrukermeny() {
+        print("\n0: Skriv ut oversikt over pasienter, leger, legemidler og resepter");
+        print("1: Opprett og legg til nye elementer i systemet");
+        print("2: Bruk en resept fra listen til en pasient");
+        print("3: Se totalt antall uskrevne resepter paa vanedannende og narkotiske legemidler");
+        print("4: Se statistikk om mulig misbruk av narkotika");
+        print("5: Avslutt programmet");
+    }
+
     public static boolean handtereBrukerinput(String brukerInput, Scanner sc) {
         switch (brukerInput) {
             case "0": {visAllInformasjon(); return true;}
             case "1": {opprettNyeElementer(sc); return true;}
-            case "2": {brukPasientResepter(sc); return true;}
+            case "2": {vilBrukePasientResepter(sc); return true;}
             case "3": {visAntVaneNark(); return true;}
             case "4": {visMuligMisbruk(); return true;}
             case "5": {return false;}
@@ -131,6 +141,25 @@ public abstract class Legesystem {
         }
     }
 
+    public static void vilBrukePasientResepter(Scanner sc) {
+        try {
+            visPasienterMedResepter();
+            String brukerInput = "";
+            System.out.print("\n# Velg pasient ved aa skrive inn ID: " + brukerInput);
+            brukerInput = sc.nextLine();
+            int pasientID = Integer.parseInt(brukerInput);
+            visPasientResepter(pasientID);
+            brukerInput = "";
+            System.out.print("\n# Velg resept ved aa skrive inn ID: " + brukerInput);
+            brukerInput = sc.nextLine();
+            brukEnResept(pasientID, Integer.parseInt(brukerInput));
+        } catch(UgyldigListeindeks e) {
+            print("Pasienten eller resepten eksisterer ikke. Ingen resept brukt.");
+        } catch(IllegalArgumentException e) {
+            print("Resepten med angitt ID eksisterer ikke for pasienten. Ingen resept brukt.");
+        }
+    }
+
     public static void visReseptmuligheter() {
         print("\nDu kan lage resept med foelgende legemidler ved aa bruke legemiddel-ID: ");
         for (Legemiddel legemiddel : legemidler) {
@@ -153,30 +182,6 @@ public abstract class Legesystem {
         print("\nDu kan lage foelgende resepttyper: hvit, blaa, militaer, p");
     }
 
-    public static void brukPasientResepter(Scanner sc) {
-        visPasienterMedResepter();
-        String brukerInput = "";
-        System.out.print("\n# Velg pasient ved aa skrive inn ID: " + brukerInput);
-        brukerInput = sc.nextLine();
-        visPasientResepter(Integer.parseInt(brukerInput));
-        brukerInput = "";
-        System.out.print("\n# Velg resept ved aa skrive inn ID: " + brukerInput);
-        brukerInput = sc.nextLine();
-        brukEnResept(Integer.parseInt(brukerInput));
-    }
-
-    public static void brukEnResept(int reseptID) {
-        Resept resept = resepter.hent(reseptID);
-        resept.bruk();
-        if (resept.hentReit() == 0) {
-            print("Resept paa " + resept.hentLegemiddel().hentNavn() +
-                    " brukt. Ingen gjaenvaerende reiterasjoner.");
-        } else {
-            print("Resept paa " + resept.hentLegemiddel().hentNavn() +
-                    " brukt. Gjenvaerende iterasjoner: " + resept.hentReit() + ".");
-        }
-    }
-
     public static void visPasienterMedResepter() {
         print("\n--------------------------------------------------------------------");
         print("PASIENTER SOM HAR RESEPTER");
@@ -189,7 +194,7 @@ public abstract class Legesystem {
     }
 
     public static void visPasientResepter(int pasientID) {
-        IndeksertListe<Resept> resepter = pasienter.hent(pasientID).hentResepter();
+        Koe<Resept> resepter = pasienter.hent(pasientID).hentResepter();
         print("\n--------------------------------------------------------------------");
         print("VISER RESEPT(ER) FOR " + pasienter.hent(pasientID));
         print("--------------------------------------------------------------------");
@@ -197,6 +202,30 @@ public abstract class Legesystem {
             print("ID " + resept.hentID() + ": " +
                     resept.hentLegemiddel().hentNavn() +
                     " (" + resept.hentReit() + " reit)");
+        }
+    }
+
+    public static void brukEnResept(int pasientID, int reseptID) throws IllegalArgumentException {
+        Koe<Resept> pasResepter = pasienter.hent(pasientID).hentResepter();
+        Resept resept = null;
+        for(Resept pasResept : pasResepter) {
+            if(pasResept == resepter.hent(reseptID)) {
+                resept = pasResept;
+            }
+        }
+        if(resept == null) throw new IllegalArgumentException();
+        
+        boolean erBrukt = resept.bruk(); 
+        if(!erBrukt) {
+            print("Resept kan ikke brukes. Ingen gjaenvaerende reiterasjoner.");
+            return;
+        };
+        if (resept.hentReit() == 0) {
+            print("Resept paa " + resept.hentLegemiddel().hentNavn() +
+                    " brukt. Ingen gjaenvaerende reiterasjoner.");
+        } else {
+            print("Resept paa " + resept.hentLegemiddel().hentNavn() +
+                    " brukt. Gjenvaerende iterasjoner: " + resept.hentReit() + ".");
         }
     }
 
@@ -247,15 +276,6 @@ public abstract class Legesystem {
                 print("--------------------------------------------------------------------\n");
             }
         }
-    }
-
-    private static void visBrukermeny() {
-        print("\n0: Skriv ut oversikt over pasienter, leger, legemidler og resepter");
-        print("1: Opprett og legg til nye elementer i systemet");
-        print("2: Bruk en resept fra listen til en pasient");
-        print("3: Se totalt antall uskrevne resepter paa vanedannende og narkotiske legemidler");
-        print("4: Se statistikk om mulig misbruk av narkotika");
-        print("5: Avslutt programmet");
     }
 
     private static String leggTilPasienter(Scanner sc, Boolean leggeTilKunEn) {
