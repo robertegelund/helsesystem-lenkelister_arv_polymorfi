@@ -38,7 +38,7 @@ public abstract class Legesystem {
     public static boolean handtereBrukerinput(String brukerInput, Scanner sc) {
         switch(brukerInput) {
             case "0": {visAllInformasjon(); return true;}
-            case "1": {return true;}
+            case "1": {opprettNyeElementer(sc); return true;}
             case "2": {brukPasientResepter(sc); return true;}
             case "3": {visAntVaneNark(); return true;}
             case "4": {visMuligMisbruk(); return true;}
@@ -65,6 +65,42 @@ public abstract class Legesystem {
         print("--------------------------------------------------------------------");
         for(Resept resept : resepter) {print(resept+"\n");}
         print("--------------------------------------------------------------------");
+    }
+
+    public static void opprettNyeElementer(Scanner sc) {
+        print("\n--------------------------------------------------------------------");
+        print("OPPRETTELSE AV NYTT ELEMENT I LEGESYSTEMET");
+        print("--------------------------------------------------------------------");
+        String brukerInput = "";
+        System.out.print("\n# Tast hva du vil opprette (lege, pasient, resept, legemiddel): " + brukerInput);
+        brukerInput = sc.nextLine();
+        switch(brukerInput) {
+            case "lege": {
+                print("# Tast navn,kontrollkode (0 hvis vanlig lege) - kun atskilt med komma: ");
+                leggTilLeger(sc, 1); break;
+            }
+            case "pasient": {
+                print("# Tast pasientnavn, fodselsnummer - kun atskilt med komma: ");
+                leggTilPasienter(sc, 1); break; 
+            }
+            case "resept": {
+                visReseptmuligheter();
+                print("# Du trenger ikke legge inn antall reiterasjoner for militaer, fordi det alltid er 3.");
+                print("\n# Tast inn legemiddel-ID,lege-ID,pasient-ID,type,antall reiterasjoner - kun atskilt med komma");
+                leggTilResepter(sc, 1); break;}
+            case "legemiddel": {
+                print("# Tast inn navn,type,pris,mengde virkestoff,styrke - kun atskilt med komma: ");
+                leggTilLegemidler(sc, 1); break; }
+            default: {break;}
+        }
+    }
+
+    public static void visReseptmuligheter() {
+        print("\nDu kan lage resept med foelgende legemidler ved aa bruke legemiddel-ID: ");
+        for(Legemiddel legemiddel : legemidler) {print("ID " + legemiddel.hentID() + ": " + legemiddel.hentNavn());}
+        print("\nDu kan lage resept for foelgende pasienter ved aa bruke pasient-ID: ");
+        for(Pasient pasient : pasienter) {print("ID " + pasient.hentPasientID() + ": " + pasient);}
+        print("\nDu kan lage foelgende resepttyper: hvit, blaa, militaer, p");
     }
 
     public static void brukPasientResepter(Scanner sc) {
@@ -205,8 +241,12 @@ public abstract class Legesystem {
     private static void leggTilPasienter(Scanner sc, int antPasienter) {
         for(int i = 0; i < antPasienter; i++) {
             String[] deler = sc.nextLine().trim().split(",");
-            pasienter.leggTil(new Pasient(deler[0], deler[1]));
+            leggTilPasient(deler[0], deler[1]);
         }
+    }
+
+    private static void leggTilPasient(String navn, String fodselsnr) {
+        pasienter.leggTil(new Pasient(navn, fodselsnr));
     }
 
     private static void leggTilLegemidler(Scanner sc, int antLegemidler) {
@@ -216,25 +256,32 @@ public abstract class Legesystem {
             int pris = Integer.parseInt(deler[2]); 
             double virkestoff = Double.parseDouble(deler[3]); 
             int styrke = (deler.length == 4) ? Integer.parseInt(deler[3]) : 0;
-    
-            if(type.equals("vanlig")) {
-                legemidler.leggTil(new Vanlig(navn, pris, virkestoff));
-            } else if(type.equals("vanedannende")) {
-                legemidler.leggTil(new Vanedannende(navn, pris, virkestoff, styrke));
-            } else if(type.equals("narkotisk")) {
-                legemidler.leggTil(new Narkotisk(navn, pris, virkestoff, styrke));
-            }
+            leggTilLegemiddel(type, navn, pris, virkestoff, styrke);
+        }
+    }
+
+    private static void leggTilLegemiddel(String type, String navn, int pris, double virkestoff, int styrke) {
+        if(type.equals("vanlig")) {
+            legemidler.leggTil(new Vanlig(navn, pris, virkestoff));
+        } else if(type.equals("vanedannende")) {
+            legemidler.leggTil(new Vanedannende(navn, pris, virkestoff, styrke));
+        } else if(type.equals("narkotisk")) {
+            legemidler.leggTil(new Narkotisk(navn, pris, virkestoff, styrke));
         }
     }
 
     private static void leggTilLeger(Scanner sc, int antLeger) {
         for(int i = 0; i < antLeger; i ++) {
             String[] deler = sc.nextLine().trim().split(",");
-            if(deler[1].equals("0")) {
-                leger.leggTil(new Lege(deler[0]));
-            } else {
-                leger.leggTil(new Spesialist(deler[0], deler[1]));
-            }
+            leggTilLege(deler[0], deler[1]);
+        }
+    }
+
+    public static void leggTilLege(String navn, String kontrollkode) {
+        if(kontrollkode.equals("0")) {
+            leger.leggTil(new Lege(navn));
+        } else {
+            leger.leggTil(new Spesialist(navn, kontrollkode));
         }
     }
 
@@ -247,20 +294,24 @@ public abstract class Legesystem {
             Pasient pasient = pasienter.hent(Integer.parseInt(deler[2]));
             String type = deler[3];
             int reit = (deler.length == 5) ? Integer.parseInt(deler[4]) : 3;
+            leggTilResept(type, legemiddel, lege, pasient, reit);
+        }
+    }
 
-            try {
-                if(type.equals("hvit")) {
-                    resepter.leggTil(lege.skrivHvitResept(legemiddel, pasient, reit));
-                } else if(type.equals("militaer")) {
-                    resepter.leggTil(lege.skrivMilResept(legemiddel, pasient));
-                } else if(type.equals("p")) {
-                    resepter.leggTil(lege.skrivPResept(legemiddel, pasient, reit));
-                } else if(type.equals("blaa")) {
-                    resepter.leggTil(lege.skrivBlaaResept(legemiddel, pasient, reit));
-                }
-            } catch(UlovligUtskrift e) {
-                print(e.getMessage() + ". Resept ikke opprettet.");
+    private static void leggTilResept(String type, Legemiddel legemiddel, Lege lege, 
+                                        Pasient pasient, int reit) {
+        try {
+            if(type.equals("hvit")) {
+                resepter.leggTil(lege.skrivHvitResept(legemiddel, pasient, reit));
+            } else if(type.equals("militaer")) {
+                resepter.leggTil(lege.skrivMilResept(legemiddel, pasient));
+            } else if(type.equals("p")) {
+                resepter.leggTil(lege.skrivPResept(legemiddel, pasient, reit));
+            } else if(type.equals("blaa")) {
+                resepter.leggTil(lege.skrivBlaaResept(legemiddel, pasient, reit));
             }
+        } catch(UlovligUtskrift e) {
+            print(e.getMessage() + ". Resept ikke opprettet.");
         }
     }
 
