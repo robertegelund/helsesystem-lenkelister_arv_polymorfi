@@ -205,7 +205,7 @@ public abstract class Legesystem {
         }
     }
 
-    public static void brukEnResept(int pasientID, int reseptID) throws IllegalArgumentException {
+    public static void brukEnResept(int pasientID, int reseptID) {
         IndeksertListe<Resept> pasResepter = pasienter.hent(pasientID).hentResepter();
         Resept resept = null;
         for(Resept pasResept : pasResepter) {
@@ -272,10 +272,10 @@ public abstract class Legesystem {
                 }
             }
             if (antNarkRes > 0) {
-                print(pasient + "\n*Antall mottatte narkotiske resepter: " + antNarkRes);
-                print("--------------------------------------------------------------------\n");
+                print(pasient + "\n*Antall mottatte narkotiske resepter: " + antNarkRes + "\n");
             }
         }
+        print("--------------------------------------------------------------------\n");
     }
 
     private static String leggTilPasienter(Scanner sc, Boolean leggeTilKunEn) {
