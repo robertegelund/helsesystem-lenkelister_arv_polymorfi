@@ -85,8 +85,8 @@ public abstract class Legesystem {
             }
             case "resept": {
                 visReseptmuligheter();
-                print("# Du trenger ikke legge inn antall reiterasjoner for militaer, fordi det alltid er 3.");
-                print("\n# Tast inn legemiddel-ID,lege-ID,pasient-ID,type,antall reiterasjoner - kun atskilt med komma");
+                print("Du trenger ikke legge inn antall reiterasjoner for militaer, fordi det alltid er 3.");
+                print("\n# Tast inn legemiddel-ID,lege,pasient-ID,type,antall reiterasjoner - kun atskilt med komma");
                 leggTilResepter(sc, 1); break;}
             case "legemiddel": {
                 print("# Tast inn navn,type,pris,mengde virkestoff,styrke - kun atskilt med komma: ");
@@ -97,7 +97,18 @@ public abstract class Legesystem {
 
     public static void visReseptmuligheter() {
         print("\nDu kan lage resept med foelgende legemidler ved aa bruke legemiddel-ID: ");
-        for(Legemiddel legemiddel : legemidler) {print("ID " + legemiddel.hentID() + ": " + legemiddel.hentNavn());}
+        for(Legemiddel legemiddel : legemidler) {
+            print("ID " + legemiddel.hentID() + ": " + legemiddel.hentNavn() + 
+            " (" + legemiddel.hentType() + ")");
+        }
+        print("\nFoelgende leger kan skrive ut resepter: ");
+        for(Lege lege : leger ) {
+            if(lege instanceof Spesialist) {
+                print(lege + ". Kan skrive ut blaa resept paa narkotiske legemidler.");
+            } else {
+                print(lege+"");
+            }
+        }
         print("\nDu kan lage resept for foelgende pasienter ved aa bruke pasient-ID: ");
         for(Pasient pasient : pasienter) {print("ID " + pasient.hentPasientID() + ": " + pasient);}
         print("\nDu kan lage foelgende resepttyper: hvit, blaa, militaer, p");
@@ -286,15 +297,27 @@ public abstract class Legesystem {
     }
 
     private static void leggTilResepter(Scanner sc, int antResepter) {
-        for(int i = 0; i < antResepter; i++) {
-            String[] deler = sc.nextLine().trim().split(",");
-            Legemiddel legemiddel = legemidler.hent(Integer.parseInt(deler[0]));
-            Lege lege = null;
-            for(Lege l : leger) { if(l.hentNavn().equals(deler[1])) lege = l; }
-            Pasient pasient = pasienter.hent(Integer.parseInt(deler[2]));
-            String type = deler[3];
-            int reit = (deler.length == 5) ? Integer.parseInt(deler[4]) : 3;
-            leggTilResept(type, legemiddel, lege, pasient, reit);
+        try {
+            for(int i = 0; i < antResepter; i++) {
+                String[] deler = sc.nextLine().trim().split(",");
+                Legemiddel legemiddel = legemidler.hent(Integer.parseInt(deler[0]));
+                Lege lege = null;
+                for(Lege l : leger) { 
+                    if(l.hentNavn().equals(deler[1])) lege = l;
+                    else throw new IllegalArgumentException(); 
+                }
+                Pasient pasient = pasienter.hent(Integer.parseInt(deler[2]));
+                String type = deler[3];
+                int reit = (deler.length == 5) ? Integer.parseInt(deler[4]) : 3;
+                leggTilResept(type, legemiddel, lege, pasient, reit);
+            }
+        } catch(ArrayIndexOutOfBoundsException e) {
+            print("Du har tastet inn informasjon som ikke finnes. Resept ikke opprettet.");
+        } catch(UgyldigListeindeks e) {
+            print("Du har tastet inn informasjon som ikke finnes. Resept ikke opprettet.");
+        }
+        catch(IllegalArgumentException e) {
+            print("Du har tastet inn informasjon som ikke finnes. Resept ikke opprettet.");
         }
     }
 
@@ -309,9 +332,11 @@ public abstract class Legesystem {
                 resepter.leggTil(lege.skrivPResept(legemiddel, pasient, reit));
             } else if(type.equals("blaa")) {
                 resepter.leggTil(lege.skrivBlaaResept(legemiddel, pasient, reit));
-            }
+            } else throw new IllegalArgumentException();
         } catch(UlovligUtskrift e) {
             print(e.getMessage() + ". Resept ikke opprettet.");
+        } catch(IllegalArgumentException e) {
+            print("Du har tastet inn informasjon som ikke finnes. Resept ikke opprettet.");
         }
     }
 
