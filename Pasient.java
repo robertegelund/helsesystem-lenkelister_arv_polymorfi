@@ -2,7 +2,7 @@ public class Pasient {
     private static int antPasienter = 0;
     private String navn, fodselsnr;
     private int pasientID;
-    private Koe<Resept> resepter = new Koe<>();
+    private IndeksertListe<Resept> resepter = new IndeksertListe<>();
 
     Pasient(String navn, String fodselsnr) {
         this.navn = navn; this.fodselsnr = fodselsnr;
@@ -18,7 +18,7 @@ public class Pasient {
         resepter.leggTil(resept);
     }
 
-    public Koe<Resept> hentResepter() {
+    public IndeksertListe<Resept> hentResepter() {
         return resepter;
     }
 

@@ -194,7 +194,7 @@ public abstract class Legesystem {
     }
 
     public static void visPasientResepter(int pasientID) {
-        Koe<Resept> resepter = pasienter.hent(pasientID).hentResepter();
+        IndeksertListe<Resept> resepter = pasienter.hent(pasientID).hentResepter();
         print("\n--------------------------------------------------------------------");
         print("VISER RESEPT(ER) FOR " + pasienter.hent(pasientID));
         print("--------------------------------------------------------------------");
@@ -206,7 +206,7 @@ public abstract class Legesystem {
     }
 
     public static void brukEnResept(int pasientID, int reseptID) throws IllegalArgumentException {
-        Koe<Resept> pasResepter = pasienter.hent(pasientID).hentResepter();
+        IndeksertListe<Resept> pasResepter = pasienter.hent(pasientID).hentResepter();
         Resept resept = null;
         for(Resept pasResept : pasResepter) {
             if(pasResept == resepter.hent(reseptID)) {
