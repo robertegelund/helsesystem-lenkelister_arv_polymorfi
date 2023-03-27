@@ -119,22 +119,22 @@ public abstract class Legesystem {
         switch (brukerInput) {
             case "lege": {
                 print("# Tast navn,kontrollkode (0 hvis vanlig lege) - kun atskilt med komma: ");
-                leggTilLeger(sc, true); print("\nLege er lagt til i systemet!"); break;
+                leggTilLeger(sc, true); break;
             }
             case "pasient": {
                 print("# Tast pasientnavn,fodselsnummer - kun atskilt med komma: ");
-                leggTilPasienter(sc, true); print("\nPasient er lagt til i systemet!"); break;
+                leggTilPasienter(sc, true); break;
             }
             case "resept": {
                 visReseptmuligheter();
                 print("Du trenger ikke taste inn antall reiterasjoner for militaer, fordi det alltid er 3.");
                 print("\n# Tast inn legemiddel-ID,lege,pasient-ID,type,antall reiterasjoner - kun atskilt med komma");
-                leggTilResepter(sc, true); print("\nResept er lagt til i systemet!"); break;
+                leggTilResepter(sc, true); break;
             }
             case "legemiddel": {
                 print("Du trenger kun taste inn vanedannende styrke for vanedannende og narkotiske legemidler.");
                 print("\n# Tast inn navn,type,pris,mengde virkestoff,styrke - kun atskilt med komma: ");
-                leggTilLegemidler(sc, true); print("\nLegemiddel er lagt til i systemet!"); break;
+                leggTilLegemidler(sc, true); break;
             }
             default: {break;}
         }
@@ -286,6 +286,7 @@ public abstract class Legesystem {
                 if(leggeTilKunEn) break;
                 nesteLinje = sc.hasNextLine() ? sc.nextLine() : null;
             }
+            if(leggeTilKunEn) print("\nPasient er lagt til i systemet!");
             return nesteLinje;
         } catch (ArrayIndexOutOfBoundsException e) {
             print("Du har ikke tastet inn nok informasjon. Pasient ikke opprettet.");
@@ -310,6 +311,7 @@ public abstract class Legesystem {
                 if(leggeTilKunEn) break;
                 nesteLinje = sc.hasNextLine() ? sc.nextLine() : null;
             }
+            if(leggeTilKunEn) print("\nLegemiddel er lagt til i systemet!");
             return nesteLinje;
         } catch (ArrayIndexOutOfBoundsException e) {
             print("Du har ikke tastet inn nok informasjon. Legemiddel ikke opprettet.");
@@ -338,7 +340,8 @@ public abstract class Legesystem {
                 leggTilLege(deler[0], deler[1]);
                 if(leggeTilKunEn) break;
                 nesteLinje = sc.hasNextLine() ? sc.nextLine() : null;
-            } 
+            }
+            if(leggeTilKunEn) print("\nLege er lagt til i systemet!");
             return nesteLinje;
         } catch (ArrayIndexOutOfBoundsException e) {
             print("Du har ikke tastet inn nok informasjon. Lege ikke opprettet.");
@@ -367,6 +370,7 @@ public abstract class Legesystem {
                 if(leggeTilKunEn) break;
                 nesteLinje = sc.hasNextLine() ? sc.nextLine() : null;
             }
+            if(leggeTilKunEn) print("\nResept er lagt til i systemet!");
             return nesteLinje;
         } catch (UlovligUtskrift e) {
             print(e.getMessage() + ". Resept ikke opprettet.");
